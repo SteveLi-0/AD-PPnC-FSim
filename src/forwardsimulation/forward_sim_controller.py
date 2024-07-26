@@ -12,7 +12,7 @@ from scipy.interpolate import interp1d
 
 class ForwardSimController:
     def __init__(
-        self, trajectory_analyzer, vehicle_state, model_type, ts):
+        self, trajectory_analyzer, vehicle_state, model_type, ts, state_observation):
 
         self.name = "Forward Simulation Controller"
         self.model_type = model_type
@@ -37,8 +37,9 @@ class ForwardSimController:
         self.steer_final_deg = vehicle_state.steer_wheel_angle
         self.compute_time = 0
 
-        # self.lon_controller = IntelligentDriverModel(self.vehicle_param)
+        self.lon_controller = IntelligentDriverModel(self.vehicle_param)
         self.lat_controller = PurePursuitModel(self.vehicle_param, lookahead_distance=5.0)
+        self.observation = state_observation
 
         print("Init agent controller succeess!")
 
@@ -53,6 +54,15 @@ class ForwardSimController:
             self.vehicle_state, self.target_point)
 
         self.steer_final_deg = self.vehicle_param.ConvertTireRadToSteeringDeg(self.steer_rad)
+
+        # longitudinal control
+        idm_info = self.observation.GetIDMInfo(self.vehicle_state)
+        self.acc_final_deg = self.lon_controller.GetIDMAcc(
+            idm_info["min_distance"],
+            self.vehicle_state.v_lon,
+            idm_info["relative_speed"])
+
+        
         return self.steer_final_deg, self.acc_final_deg
         
         

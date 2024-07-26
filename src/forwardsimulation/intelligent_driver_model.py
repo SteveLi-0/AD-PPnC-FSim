@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from common.vehicle_param import VehicleParam
+
 class IntelligentDriverModel:
-    def __init__(self, v0=20.0, T=1.5, a=1.5, b=1.5, delta=4, s0=2.0):
+    def __init__(self, vehicle_paramm, v0=20.0, T=1.5, a=1.5, b=1.5, delta=4, s0=2.0):
         """
         初始化IDM模型参数
         :param v0: 期望速度 (m/s)
@@ -18,8 +20,9 @@ class IntelligentDriverModel:
         self.b = b
         self.delta = delta
         self.s0 = s0
+        self.vehicle_param = vehicle_paramm
 
-    def acceleration(self, s, v, dv):
+    def GetIDMAcc(self, s, v, dv):
         """
         计算加速度
         :param s: 车间距离 (m)
@@ -27,8 +30,12 @@ class IntelligentDriverModel:
         :param dv: 相对速度 (m/s)
         :return: 加速度 (m/s^2)
         """
+        if s > 200.0:
+            s = 1000.0
+            dv = 0.0
         s_star = self.s0 + max(0, v * self.T + v * dv / (2 * np.sqrt(self.a * self.b)))
-        return self.a * (1 - (v / self.v0) ** self.delta - (s_star / s) ** 2)
+        acc = self.a * (1 - (v / self.v0) ** self.delta - (s_star / s) ** 2)
+        return acc
 
 def simulate_idm(idm, s0, v0, v_lead, t_max=100, dt=0.1):
     """

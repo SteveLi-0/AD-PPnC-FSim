@@ -20,8 +20,8 @@ class TrajectoryAnalyzer:
         self.index = 0
         self.trajectory_points = []
         if file_path == None:
-            # self.__CreateLine()
-            self.__CreatCircle()
+            self.__CreateLine()
+            # self.__CreatCircle()
             print("trajectory create!")
         else:
             try:
@@ -119,7 +119,7 @@ class TrajectoryAnalyzer:
             self.trajectory_points.append(point)
 
     def __CreateLine(self):
-        t = np.linspace(0, 40.0, 200)
+        t = np.linspace(0, 1000.0, 20000)
         for i in range(t.size):
             point = TrajectoryPoint()
             point.x_m = 0.0
