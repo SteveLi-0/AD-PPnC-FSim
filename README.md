@@ -1,2 +1,4 @@
 # AD-PPnC-FSim
-forward simulation
+A simple model based forward simulation.
+reference: EPSILON_An_Efficient_Planning_System_for_Automated_Vehicles_in_Highly_Interactive_Environments
+
